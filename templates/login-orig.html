@@ -142,8 +142,8 @@
             const base = "127.0.0.1";
             const url = `${base}/login`;
             let data = {
-                user: username,
-                pass: password
+                username: username,
+                password: password
             };
 
             console.log(data);
@@ -173,9 +173,9 @@
             //2fa
 
             const base = "127.0.0.1";
-            const url = `${base}/otp`;
+            const url = `${base}/token`;
             let data = {
-                otp: otp
+                token: token
             };
             console.log(data);
             // send a request to our backend and redirect our user to 2fa afterward
