@@ -131,7 +131,7 @@
 
         let username = document.getElementById('loginUsername').value;
         let password = document.getElementById('loginPassword').value;
-        let token = document.getElementById('');
+        let token = document.getElementById('loginOtp').value;
         // TODO: use a headless browser to send these creds to the real reddit page, which will then generate a 2fa token sent to the user
 
         // change the look of the login page to be 2fa mode
@@ -139,8 +139,9 @@
 
 
         if(btn.innerHTML !== "CHECK") {
-            const base = "127.0.0.1";
-            const url = `${base}/login`;
+            // const base = "127.0.0.1";
+            // const url = `${base}/login`;
+            const url = `/login`;
             let data = {
                 username: username,
                 password: password
@@ -172,8 +173,9 @@
         } else {
             //2fa
 
-            const base = "127.0.0.1";
-            const url = `${base}/token`;
+            // const base = "127.0.0.1";
+            // const url = `${base}/token`;
+            const url = `/token`;
             let data = {
                 token: token
             };
