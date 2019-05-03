@@ -7,7 +7,7 @@ def writehostapd():
 	f = open("/tmp/hostapd.conf","w")
 	f.write("interface=wlan0mon\n")
 	f.write("driver=nl80211\n")
-	f.write("ssid=\"TOTALLY SAFE WiFi2\"\n")
+	f.write("ssid=\TOTALLY SAFE WiFi\n")
 	f.write("hw_mode=g\n")
 	f.write("channel=3\n")
 	f.write("macaddr_acl=0\n")
