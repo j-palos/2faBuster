@@ -100,4 +100,7 @@ def go():
         twoauth_correct = do_twoauth("815720")
     if twoauth_correct:
         pass
-go()
+
+if __name__ == '__main__':
+    go()
+
