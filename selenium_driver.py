@@ -83,14 +83,21 @@ def do_twoauth(code):
             except TimeoutException:
                 print("Loading took too much time!")
                 return False
-        
+
+
+# Change the password! New password will be returned, or 0 if error.
+def do_password_change():
+    driver.get("https://www.reddit.com/settings/account")
+    change_pwd_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'cIQFwt')))    
+    change_pwd_button.click()
+
 
 def go():
     setup()
     cred_correct = do_login(Username="2fabusters", Password="attackatdawn")
-    twoauth_corrent = False
+    twoauth_correct = False
     if cred_correct:
-        twoauth_corrent = do_twoauth("000000")
-    if twoauth_corrent:
+        twoauth_correct = do_twoauth("815720")
+    if twoauth_correct:
         pass
 go()
