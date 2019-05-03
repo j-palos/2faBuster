@@ -25,7 +25,7 @@ def writeDnsmasq():
 	f.write("log-queries\n")
 	f.write("log-dhcp\n")
 	f.write("listen-address=127.0.0.1\n")
-
+	
 os.system('airmon-ng check kill')
 os.system('airmon-ng start wlan0')
 os.system('rm /tmp/hostapd.conf')
