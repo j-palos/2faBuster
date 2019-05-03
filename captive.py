@@ -17,7 +17,7 @@ def writehostapd():
 def writeDnsmasq():
 	f = open("/tmp/dnsmasq.conf","w")
 	f.write("interface=wlan0mon\n")
-	f.write("dhcp-range=192.168.1.2,192.168.1.30,12h\n")
+	f.write("dhcp-range=192.168.1.3,192.168.1.250,12h\n")
 	f.write("server=8.8.8.8\n")
 	f.write("address=\"/#/192.168.1.1\"\n")
 	f.write("dhcp-option=3,192.168.1.1\n")
