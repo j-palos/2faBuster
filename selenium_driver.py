@@ -93,4 +93,7 @@ def go():
         twoauth_corrent = do_twoauth("000000")
     if twoauth_corrent:
         pass
-go()
+
+if __name__ == '__main__':
+    go()
+
