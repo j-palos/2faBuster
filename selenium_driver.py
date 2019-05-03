@@ -79,15 +79,18 @@ def do_twoauth(code):
                 if title_reddit.get_property("innerHTML") == TITLE_TO_MATCH:
                     print(TITLE_TO_MATCH)
                     print("Page is ready!")
-                    return 0
+                    return True
             except TimeoutException:
                 print("Loading took too much time!")
-                return -1
+                return False
         
 
 def go():
     setup()
     cred_correct = do_login(Username="2fabusters", Password="attackatdawn")
+    twoauth_corrent = False
     if cred_correct:
-        do_twoauth("000000")
+        twoauth_corrent = do_twoauth("000000")
+    if twoauth_corrent:
+        pass
 go()
