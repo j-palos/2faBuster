@@ -12,9 +12,14 @@ import sys
 import platform
 import time
 
-
+# constants
 ADDRESS = 'http://127.0.0.1:8000/'
 TITLE_TO_MATCH = "reddit: the front page of the internet"
+INVALID_CREDS = -1
+SUCCESS_NO_TWOAUTH = 0
+SUCCESS_TWOAUTH = 1
+
+# globals
 driver = None
 
 # Setup the headless browser with Gecko for Firefox and open reddit's login page
@@ -41,15 +46,19 @@ def do_login(**credentials):
     submit_btn = driver.find_element_by_class_name("AnimatedForm__submitButton")
     submit_btn.click()
 
-    # Is the 2FA page showing up?
+    # Which page is showing up?
     while True:
         length_error = len(driver.find_elements_by_class_name('m-error'))
         length_twofa = len(driver.find_elements_by_class_name('mode-2fa'))
+        length_notwofa = len(driver.find_elements_by_class_name('m-success'))
         if length_error > 0:
-            return False # creds were not correct
+            return INVALID_CREDS # creds were not correct
         if length_twofa > 0:
-            return True # creds were valid
-
+            return SUCCESS_TWOAUTH # creds were valid and auth page presented
+        if length_notwofa > 0:
+            print("logged in, no twoauth")
+            return SUCCESS_NO_TWOAUTH # successfully logged in without two auth
+        
 
 # returns -1 if login failed due to invalid auth or other error
 # 0 upon login success only
@@ -94,10 +103,11 @@ def do_password_change():
 
 def go():
     setup()
-    cred_correct = do_login(Username="2fabusters", Password="attackatdawn")
+    cred_status = do_login(Username="2fabusters", Password="attackatdawn")
     twoauth_correct = False
-    if cred_correct:
-        twoauth_correct = do_twoauth("815720")
+    if cred_status == SUCCESS_TWOAUTH:
+        print("login good; trying twoauth")
+        twoauth_correct = do_twoauth("000000")
     if twoauth_correct:
         pass
 
