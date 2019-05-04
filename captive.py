@@ -12,6 +12,7 @@ def writehostapd():
 	f.write("channel=3\n")
 	f.write("macaddr_acl=0\n")
 	f.write("ignore_broadcast_ssid=0\n")
+	f.close()
 	
 
 def writeDnsmasq():
@@ -27,6 +28,20 @@ def writeDnsmasq():
 	f.write("log-queries\n")
 	f.write("log-dhcp\n")
 	f.write("listen-address=127.0.0.1\n")
+	f.close()
+	
+def writeCaptivePortal():
+	f = open("/etc/nginx/sites-enabled/captive_portal","w")
+	f.write("server{\n")
+	f.write("    listen 80;\n")
+	f.write("    root /var/www/captive_portal;\n")
+	f.write("    location / {\n")
+	f.write("        if (!-f $request_filename){\n")
+	f.write("            return 302 $scheme://192.168.1.1/index.html;\n")
+	f.write("        }\n")
+	f.write("    }\n")
+	f.write("}\n")
+	f.close()
 	
 os.system('airmon-ng check kill')
 os.system('airmon-ng start wlan0')
@@ -38,5 +53,9 @@ writeDnsmasq()
 os.system('dnsmasq -C /tmp/dnsmasq.conf -d')
 os.system('ifconfig wlan0mon up 192.168.1.1 netmask 255.255.255.0')
 os.system('route add -net 192.168.1.0 netmask 255.255.255.0 gw 192.168.1.1')
+os.system('mkdir /var/www/captive_portal')
+os.system('rm /etc/nginx/sites-enabled/*')
+writeCaptivePortal()
+#os.system("cp -r captiveTemplate")
 os.system('service nginx reload')
 os.system('service nginx restart')
