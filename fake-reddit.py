@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('login-orig.html')
+    return render_template('reddit.html')
 
 @app.route('/login', methods=['POST'])
 def login():
