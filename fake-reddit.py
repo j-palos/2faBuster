@@ -18,23 +18,37 @@ def login():
     user = data['username']
     pswd = data['password']
 
-    app.logger.info('{} : {}'.format(user, pswd))
+    app.logger.info('user: {}  //  pass: {}'.format(user, pswd))
 
-    sd.do_login(Username=user, Password=pswd)
+    # err = sd.do_login(Username=user, Password=pswd)
+    err = sd.SUCCESS_NO_TWOAUTH
 
-    return jsonify({'valid': True, '2fa': True})
+    res = {'valid': False, '2fa': False}
+
+    if err == sd.SUCCESS_NO_TWOAUTH:
+        res['valid'] = True
+    if err == sd.SUCCESS_TWOAUTH:
+        res['valid'] = True
+        res['2fa'] = True
+
+    return jsonify(res)
 
 @app.route('/token', methods=['POST'])
 def twofa():
     data = json.loads(request.data)
     tok = data['token']
 
-    app.logger.info('{}'.format(tok))
+    app.logger.info('tok: {}'.format(tok))
 
-    sd.do_twoauth(tok)
+    # valid = sd.do_twoauth(tok)
+    valid = True
 
-    return jsonify({'valid': True})
+    return jsonify({'valid': valid})
+
+@app.route('/shrek', methods=['GET'])
+def shrek():
+    return 'YOU GOT SHREKED!!\n\n\tRegards,\n\tBigChungus'
 
 if __name__ == '__main__':
-    app.before_first_request(sd.setup)
+    # app.before_first_request(sd.setup)
     app.run(debug=True)

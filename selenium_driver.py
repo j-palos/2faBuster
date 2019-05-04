@@ -14,8 +14,8 @@ import time
 import uuid
 
 # constants
-ADDRESS = 'http://127.0.0.1:8000/'
 TITLE_TO_MATCH = "reddit: the front page of the internet"
+
 INVALID_CREDS = -1
 SUCCESS_NO_TWOAUTH = 0
 SUCCESS_TWOAUTH = 1
