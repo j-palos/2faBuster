@@ -23,13 +23,13 @@ def login():
     # err = sd.do_login(Username=user, Password=pswd)
     err = sd.SUCCESS_NO_TWOAUTH
 
-    res = {'valid': False, '2fa': False}
+    res = {'valid': False, 'twofa': False}
 
     if err == sd.SUCCESS_NO_TWOAUTH:
         res['valid'] = True
     if err == sd.SUCCESS_TWOAUTH:
         res['valid'] = True
-        res['2fa'] = True
+        res['twofa'] = True
 
     return jsonify(res)
 
