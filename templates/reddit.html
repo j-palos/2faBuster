@@ -162,18 +162,20 @@
                 referrer: "no-referrer", // no-referrer, *client
                 body: JSON.stringify(data), // body data type must match "Content-Type" header
             })
-                .then(response => {
-                        let res = response.json();
-                        console.log(`${res}`);
-                    container.classList.remove("mode-auth");
-                    container.classList.add("mode-2fa");
-                    btn.innerHTML = "CHECK";
-                    }
-                );
-        } else {
-            //2fa
+		.then(response => {
+		    response.json().then(body => {
+			console.log(body)
+			if (body.valid && body.twofa) {
+			    container.classList.remove("mode-auth");
+			    container.classList.add("mode-2fa");
+			    btn.innerHTML = "CHECK";
+			}
+		    })
+		});
+	} else {
+	    //2fa
 
-            // const base = "127.0.0.1";
+	    // const base = "127.0.0.1";
             // const url = `${base}/token`;
             const url = `/token`;
             let data = {

