@@ -23,14 +23,11 @@
     <meta name="theme-color" content="#ffffff">
 
 
-    <link rel="stylesheet"
-          href="reddit-css/css1.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css1.css') }}">
 
-    <link rel="stylesheet"
-          href="reddit-css/css2.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css2.css') }}">
 
-    <link rel="stylesheet"
-          href="reddit-css/css3.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css3.css') }}">
 
 
 </head>
@@ -113,13 +110,13 @@
 </script> -->
 
 
-<script type="text/javascript" src="reddit-scripts/js1.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='reddit-scripts/js1.js') }}"></script>
 
-<script type="text/javascript" src="reddit-scripts/js2.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='reddit-scripts/js2.js') }}"></script>
 
-<script type="text/javascript" src="reddit-scripts/js3.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='reddit-scripts/js3.js') }}"></script>
 
-<script type="text/javascript" src="reddit-scripts/js4.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='reddit-scripts/js4.js') }}"></script>
 
 <script type="text/javascript">
     let btn = document.getElementById('submit_button');
