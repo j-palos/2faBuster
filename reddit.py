@@ -73,6 +73,7 @@ def links():
 
 @app.route('/reddit')
 def reddit():
+    global d
     session['driver'] = d
     drivers[d] = sd.setup()
     d += 1
