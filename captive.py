@@ -1,12 +1,21 @@
-#!/usr/bin/python
+import subprocess
+import shlex
+import time
 
-import os
-import sys
 
-os.system("cp -r templates/* /var/www/captive_portal")
-os.system('airmon-ng check kill')
-os.system('airmon-ng start wlan0')
-os.system('hostapd /var/www/captive_portal/hostapd.conf &')
-os.system('dnsmasq -C /var/www/captive_portal/dnsmasq.conf -d')
-os.system('ifconfig wlan0mon up 192.168.1.1 netmask 255.255.255.0')
-os.system('route add -net 192.168.1.0 netmask 255.255.255.0 gw 192.168.1.1')
+def captive():
+    subprocess.run(shlex.split('airmon-ng check kill'))
+    subprocess.run(shlex.split('killall network-manager wpa_supplicant dnsmasq'))
+    subprocess.run(shlex.split('airmon-ng start wlan0'))
+    apd = subprocess.Popen(shlex.split('hostapd ./hostapd.conf'))
+    time.sleep(1)
+    dnsmasq = subprocess.Popen(shlex.split('dnsmasq -C ./dnsmasq.conf -d'))
+    subprocess.run(shlex.split('ifconfig wlan0mon up 192.168.1.1 netmask 255.255.255.0'))
+    subprocess.run(shlex.split('route add -net 192.168.1.0 netmask 255.255.255.0 gw 192.168.1.1'))
+
+    return apd, dnsmasq
+
+
+if __name__ == '__main__':
+    captive()
+
