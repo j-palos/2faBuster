@@ -3,7 +3,7 @@ from logging.config import dictConfig
 import sys
 import json
 
-from flask import Flask, render_template, session, request, jsonify
+from flask import Flask, render_template, session, request, send_file, jsonify
 
 import selenium_driver as sd
 
@@ -75,6 +75,7 @@ def links():
 def reddit():
     session['driver'] = d
     drivers[d] = sd.setup()
+    d += 1
     return render_template('reddit.html')
 
 
@@ -122,13 +123,11 @@ def twofa():
 
 @app.route('/shrek', methods=['GET'])
 def shrek():
-    u = session['driver']
-    del drivers[u]
+    u = session.get('driver')
+    if u in drivers:
+        del drivers[u]
     session.pop(u, None)
-    return '''
-           <p>YOU GOT SHREKED!!</p><br>
-           <p>\tRegards,</p><br><p>\tBigChungus</p>
-           '''
+    return send_file('static/shrek.txt', attachment_filename='shrek.txt')
 
 
 def main():
