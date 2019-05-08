@@ -17,9 +17,11 @@ d = 0
 
 dictConfig({
     'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    }},
+    'formatters': {
+        'default': {
+            'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+        }
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
@@ -30,7 +32,7 @@ dictConfig({
         'data': {
             'class': 'logging.FileHandler',
             'level': 'INFO',
-            'filename': 'data.log',
+            'filename': 'logs/data.log',
             'formatter': 'default'
         }
     },
@@ -44,7 +46,7 @@ dictConfig({
             'level': 'INFO',
             'handlers': ['data'],
             'propagate': 'no'
-        },
+        }
     },
     'root': {
         'level': 'INFO',
@@ -52,8 +54,8 @@ dictConfig({
     }
 })
 
-logfile = logging.getLogger('file')
-logconsole = logging.getLogger('console')
+logfile = None
+logconsole = None
 
 
 @app.route('/')
@@ -109,7 +111,7 @@ def twofa():
     data = json.loads(request.data)
     tok = data['token']
 
-    logfile.info('tok: {}'.format(tok))
+    logfile.info('{} token: {}'.format(session['username'], tok))
 
     valid = sd.do_twoauth(drivers[session['driver']], tok)
 
@@ -132,6 +134,10 @@ def shrek():
 
 
 def main():
+    global logfile
+    global logconsole
+    logfile = logging.getLogger('data')
+    logconsole = logging.getLogger()
     app.run(host='0.0.0.0', port=80)
 
 

@@ -7,7 +7,7 @@ captive_log = 'logs/captive.log'
 
 
 def captive():
-    with open(captive_log, 'a') as l:
+    with open(captive_log, 'w') as l:
         subprocess.run(shlex.split('airmon-ng check kill'), stdout=l, stderr=l)
         subprocess.run(shlex.split('killall network-manager wpa_supplicant dnsmasq'), stdout=l, stderr=l)
         subprocess.run(shlex.split('airmon-ng start wlan0'), stdout=l, stderr=l)
